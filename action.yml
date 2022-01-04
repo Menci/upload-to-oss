@@ -1,0 +1,42 @@
+name: Upload files to Aliyun OSS (incremental)
+description: Upload local files in a directory to Aliyun OSS with a prefix incrementally, with filename filter.
+branding:
+  icon: upload-cloud
+  color: orange
+inputs:
+  access-key-id:
+    description: The accessKeyId used to authenticate with Aliyun. Please specify `access-key-id` and `access-key-secret` or specify `security-token`.
+    default: ''
+  access-key-secret:
+    description: The accessKeySecret used to authenticate with Aliyun. Please specify `access-key-id` and `access-key-secret` or specify `security-token`.
+    default: ''
+  security-token:
+    description: The securityToken (STS) used to authenticate with Aliyun. Please specify `access-key-id` and `access-key-secret` or specify `security-token`.
+    default: ''
+  bucket:
+    description: The Aliyun OSS bucket name to upload to.
+    required: true
+  endpoint:
+    description: The Aliyun OSS endpoint used to upload.
+    required: true
+  local-path:
+    description: The local path of directory to upload. Must point to a directory.
+    required: true
+  remote-path:
+    description: The remote path (prefix) to upload to.
+    required: true
+  include-regex:
+    description: The regex of filenames included. All files by default.
+    default: ''
+  exclude-regex:
+    description: The regex of filenames excluded. A file is ignored when matching it even if it matches `include-regex`.
+    default: '^$'
+  headers:
+    description: A JSON for HTTP response headers of uploaded file.
+    default: '{}'
+  delay-html-file-upload:
+    description: Whether or not to delay upload of HTML file after other files.
+    default: 'false'
+runs:
+  using: node12
+  main: bootstrap.js
