@@ -32,7 +32,7 @@ inputs:
     description: The regex of filenames excluded. A file is ignored when matching it even if it matches `include-regex`.
     default: '^$'
   headers:
-    description: A JSON for HTTP response headers of uploaded file.
+    description: 'A JSON or JS function `(filename: string) => Record<string, string>` for HTTP response headers of uploaded file.'
     default: '{}'
   delay-html-file-upload:
     description: Whether or not to delay upload of HTML file after other files.

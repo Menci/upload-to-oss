@@ -35,11 +35,13 @@ jobs:
           # Exclude some files
           excluce-regex: dont-upload-this\.html$
 
-          # Set some headers (in JSON format)
+          # Set some headers (JS function or just in JSON)
           headers: |
-            {
-              "Cache-Control": "public, max-age=60"
-            }
+            filename => (
+              {
+                "Cache-Control": `public, max-age=${filename.endsWith(".html") ? 60 : 604800}`
+              }
+            )
 
           # Upload ALL other files before uploading HTML files
           delay-html-file-upload: true

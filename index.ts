@@ -118,7 +118,7 @@ async function main() {
 
   const remotePath = normalizePath(input.remotePath, false, true, "");
   const localPath = input.localPath;
-  const headers = JSON.parse(input.headers.trim() || '{}');
+  const headers: Record<string, string> | ((filePath: string) => Record<string, string>) = eval(`(${input.headers.trim() || '{}'})`);
 
   core.startGroup("Upload files");
   for (
@@ -133,7 +133,7 @@ async function main() {
     await Promise.all(currentUploadList.map(async key => {
       const fileLocalPath = path.resolve(localPath, key);
       const fileRemotePath = remotePath + key;
-      await oss.put(fileRemotePath, fileLocalPath, { headers });
+      await oss.put(fileRemotePath, fileLocalPath, { headers: typeof headers === "function" ? headers(key) : headers });
       console.log(`Uploaded file ${JSON.stringify(key)}`);
     }));  
   }
