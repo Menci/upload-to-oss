@@ -45,4 +45,7 @@ jobs:
 
           # Upload ALL other files before uploading HTML files
           delay-html-file-upload: true
+
+          # Prevent deleting missing remote files (defaults to `false`)
+          keep-missing-remote-files: true
 ```

@@ -37,6 +37,10 @@ inputs:
   delay-html-file-upload:
     description: Whether or not to delay upload of HTML file after other files.
     default: 'false'
+  keep-missing-remote-files:
+    description: Whether or not to keep missing remote files compared by local.
+    default: 'false'
+    required: false
 runs:
   using: node12
   main: bootstrap.js
