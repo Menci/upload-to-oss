@@ -18,7 +18,7 @@ const input = {
   exclude: core.getInput("exclude-regex"),
   headers: core.getInput("headers"),
   delayHtmlFileUpload: core.getBooleanInput("delay-html-file-upload"),
-  keepMissingRemoteFiles: core.getBooleanInput("delete-missing-remote-files"),
+  keepMissingRemoteFiles: core.getBooleanInput("keep-missing-remote-files"),
 };
 
 const oss = new OSS({
