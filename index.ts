@@ -18,7 +18,7 @@ const input = {
   exclude: core.getInput("exclude-regex"),
   headers: core.getInput("headers"),
   delayHtmlFileUpload: core.getBooleanInput("delay-html-file-upload"),
-  keepMissingRemoteFiles: core.getBooleanInput("keep-missing-remote-files"),
+  noDeleteRemoteFiles: core.getBooleanInput("no-delete-remote-files"),
 };
 
 const oss = new OSS({
@@ -140,7 +140,7 @@ async function main() {
   }
   core.endGroup()
 
-  if (!input.keepMissingRemoteFiles) {
+  if (!input.noDeleteRemoteFiles) {
     core.startGroup("Delete files");
     await Promise.all(deleteList.map(async key => {
       const fileRemotePath = remotePath + key;
