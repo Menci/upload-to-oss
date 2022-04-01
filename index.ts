@@ -17,7 +17,8 @@ const input = {
   include: core.getInput("include-regex"),
   exclude: core.getInput("exclude-regex"),
   headers: core.getInput("headers"),
-  delayHtmlFileUpload: core.getBooleanInput("delay-html-file-upload")
+  delayHtmlFileUpload: core.getBooleanInput("delay-html-file-upload"),
+  noDeleteRemoteFiles: core.getBooleanInput("no-delete-remote-files"),
 };
 
 const oss = new OSS({
@@ -138,14 +139,16 @@ async function main() {
     }));  
   }
   core.endGroup()
-  
-  core.startGroup("Delete files");
-  await Promise.all(deleteList.map(async key => {
-    const fileRemotePath = remotePath + key;
-    await oss.delete(fileRemotePath);
-    console.log(`Deleted file ${JSON.stringify(key)}`);
-  }));
-  core.endGroup()
+
+  if (!input.noDeleteRemoteFiles) {
+    core.startGroup("Delete files");
+    await Promise.all(deleteList.map(async key => {
+      const fileRemotePath = remotePath + key;
+      await oss.delete(fileRemotePath);
+      console.log(`Deleted file ${JSON.stringify(key)}`);
+    }));
+    core.endGroup()
+  }
 }
 
 main().then(() => {
