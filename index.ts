@@ -19,7 +19,8 @@ const input = {
   headers: core.getInput("headers"),
   delayHtmlFileUpload: core.getBooleanInput("delay-html-file-upload"),
   noDeleteRemoteFiles: core.getBooleanInput("no-delete-remote-files"),
-  retry: core.getInput("retry")
+  retry: core.getInput("retry"),
+  incremental: core.getBooleanInput("incremental")
 };
 
 const oss = new OSS({
@@ -133,7 +134,7 @@ async function main() {
   const local = await listLocal();
   const remote = await listRemote();
 
-  const uploadList = Array.from(local.keys()).filter(key => remote.get(key) !== local.get(key));
+  const uploadList = Array.from(local.keys()).filter(key => !input.incremental || remote.get(key) !== local.get(key));
   const deleteList = Array.from(remote.keys()).filter(key => !local.has(key));
 
   const remotePath = normalizePath(input.remotePath, false, true, "");

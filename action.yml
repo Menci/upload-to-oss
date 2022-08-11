@@ -45,6 +45,10 @@ inputs:
     description: Retry times for each OSS operation. Default is 5.
     default: '5'
     required: false
+  incremental:
+    description: Upload files whose content changed only. Custom headers are not checked.
+    default: 'true'
+    required: false
 runs:
   using: node12
   main: bootstrap.js
