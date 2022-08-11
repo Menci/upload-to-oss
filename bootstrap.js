@@ -1,5 +1,4 @@
 const child_process = require("child_process");
 child_process.execSync("yarn", { stdio: "inherit", cwd: __dirname });
 
-require("ts-node/register/transpile-only");
-require("./index");
+require("./dist/index");

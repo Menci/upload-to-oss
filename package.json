@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc --target es5 --esModuleInterOp --outDir dist *.ts"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
@@ -13,7 +13,6 @@
     "@actions/core": "^1.6.0",
     "ali-oss": "^6.16.0",
     "klaw": "^4.0.1",
-    "ts-node": "^10.9.1",
     "typescript": "^4.4.4"
   },
   "devDependencies": {

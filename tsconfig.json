@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
-    "esModuleInterop": false
+    "target": "ES2019",
+    "module": "CommonJS",
+    "esModuleInterop": false,
+    "moduleResolution": "node",
+    "outDir": "dist"
   }
 }
