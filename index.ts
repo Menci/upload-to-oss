@@ -19,6 +19,7 @@ const input = {
   headers: core.getInput("headers"),
   delayHtmlFileUpload: core.getBooleanInput("delay-html-file-upload"),
   noDeleteRemoteFiles: core.getBooleanInput("no-delete-remote-files"),
+  retry: core.getInput("retry")
 };
 
 const oss = new OSS({
@@ -28,6 +29,24 @@ const oss = new OSS({
   bucket: input.bucket,
   endpoint: input.endpoint,
 });
+
+async function withRetry<T>(operation: () => Promise<T>) {
+  let retry = Number(input.retry)
+  if (!Number.isSafeInteger(retry) && retry > 0) retry = 5;
+
+  for (let i = 1; i <= retry; i++) {
+    try {
+      return await operation();
+    } catch (e) {
+      if (i !== retry) {
+        console.error(`Retrying for the ${i}-th time on`, e);
+        await new Promise(resolve => setTimeout(resolve, Math.random() * 3));
+      } else {
+        throw e;
+      }
+    }
+  }
+}
 
 function normalizePath(pathString: string, leadingSlash: boolean, trailingSlash: boolean, whenRoot: string) {
   pathString = path.posix.normalize(pathString);
@@ -62,7 +81,7 @@ async function listRemote() {
     if (continuationToken)
       query["continuation-token"] = continuationToken;
 
-    const response = await (oss as unknown as OSS.ClusterClient).listV2(query, {});
+    const response = await withRetry(() => (oss as unknown as OSS.ClusterClient).listV2(query, {}));
     for (const object of response.objects || []) {
       results.set(object.name.slice(prefix.length), object.etag.split('"').join("").toLowerCase());
     }
@@ -134,7 +153,7 @@ async function main() {
     await Promise.all(currentUploadList.map(async key => {
       const fileLocalPath = path.resolve(localPath, key);
       const fileRemotePath = remotePath + key;
-      await oss.put(fileRemotePath, fileLocalPath, { headers: typeof headers === "function" ? headers(key) : headers });
+      await withRetry(() => oss.put(fileRemotePath, fileLocalPath, { headers: typeof headers === "function" ? headers(key) : headers }));
       console.log(`Uploaded file ${JSON.stringify(key)}`);
     }));  
   }
@@ -144,7 +163,7 @@ async function main() {
     core.startGroup("Delete files");
     await Promise.all(deleteList.map(async key => {
       const fileRemotePath = remotePath + key;
-      await oss.delete(fileRemotePath);
+      await withRetry(() => oss.delete(fileRemotePath));
       console.log(`Deleted file ${JSON.stringify(key)}`);
     }));
     core.endGroup()

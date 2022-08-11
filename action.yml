@@ -41,6 +41,10 @@ inputs:
     description: Whether or not to keep missing remote files compared to local.
     default: 'false'
     required: false
+  retry:
+    description: Retry times for each OSS operation. Default is 5.
+    default: '5'
+    required: false
 runs:
   using: node12
   main: bootstrap.js
