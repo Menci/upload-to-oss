@@ -1,9 +1,9 @@
-import fs from "fs";
-import path from "path";
+import * as fs from "fs";
+import * as path from "path";
 import { createHash } from "crypto";
 
-import klaw from "klaw";
-import OSS from "ali-oss";
+import * as klaw from "klaw";
+import * as OSS from "ali-oss";
 import * as core from "@actions/core";
 
 const input = {
